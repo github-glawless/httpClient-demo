@@ -11,18 +11,24 @@ export class CustomerService {
   constructor(private httpClient: HttpClient) { }
 
   getCustomer(id: number) {
-    // TODO - Send a request to the API to get the correct Customer data using the httpClient. This method should return an Observable!
-    return new Customer();
+    // TODO - Send a request to the API to get the correct 
+    return this.httpClient
+    .get<Customer>(`http://127.0.0.1:3000/customers/${id}`).pipe(
+      tap(_ => {
+        console.log(`fetched customer with id ${id}`);
+      }),
+      catchError(this.handleError('get Customer', new Customer()))
+    );
   }
 
   getCustomers(): Observable<Customer[]> {
-    return this.httpClient
-      .get<Customer[]>('http://127.0.0.1:3000/customers').pipe(
-        tap(data => {
-          console.log('fetched customers');
-        }),
-        catchError(this.handleError('get Customer', []))
-      );
+   return this.httpClient
+     .get<Customer[]>('http://127.0.0.1:3000/customers').pipe(
+       tap(data => {
+         console.log('fetched customers');
+       }),
+       catchError(this.handleError('get Customer', []))
+     );
   }
 
   addCustomer(customer: Customer): Observable<Customer> {
